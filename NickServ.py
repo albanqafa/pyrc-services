@@ -93,8 +93,8 @@ class IRC:
 									print('saved password is ' + NickServ_db_passwd)
 									if NickServ_db_passwd == identify_passwd:
 										self._raw('PRIVMSG ' + from_nick + ' :you authenticated as ' + from_nick)
-										self._raw('PRIVMSG #main :' + from_nick + ' authenticated as ' + from_nick)
-										self._raw('MODE ' + from_nick + ' +R')
+										#self._raw('PRIVMSG #main :' + from_nick + ' authenticated as ' + from_nick)
+										self._raw('MODE #main +v ' + from_nick) #gives voice to user on channel #main
 										nickidentified = True
 									elif nickregistered == True and nickidentified == False:
 										self._raw('PRIVMSG ' + from_nick + ' :wrong password for ' + from_nick)
