@@ -50,7 +50,7 @@ class IRC:
 					#elif 'test' in line:
 					#	self._raw('PRIVMSG #main :IT WORKS')
 					elif 'REGISTER' in line:
-						nickregistered = False
+						nickregistered_reg = False
 						register_msg = line.split(' ')
 						from_nick = line[line.find(':')+1 : line.find('!')]
 						if len(register_msg) == 6: #if user actually sent a password
@@ -58,12 +58,12 @@ class IRC:
 							with open('NickServ_db.csv', 'rt') as f:
 								data = f.readlines()
 							for line in data:
-								if line.__contains__(from_nick):
-									nickregistered = True
+								if line.split(',')[1] == from_nick:
+									nickregistered_reg = True
 									self._raw('PRIVMSG ' + from_nick + ' :' + from_nick + ' is already registered')
 									self._raw('PRIVMSG ' + from_nick + ' :to identify, please send an identify command like "/msg NickServ IDENTIFY ' + from_nick + 'password"')
 							
-							if nickregistered == False:
+							if nickregistered_reg == False:
 								register_nick = from_nick
 								register_passwd = register_msg[4]
 								register_email = register_msg[5]
@@ -75,7 +75,7 @@ class IRC:
 							self._raw('PRIVMSG ' + from_nick + ' :something is wrong with your REGISTER message, you must include password and email')
 
 					elif 'IDENTIFY' in line:
-						nickregistered = False
+						nickregistered_ident = False
 						nickidentified = False
 						identify_msg = line.split(' ')
 						from_nick = line[line.find(':')+1 : line.find('!')]
@@ -85,20 +85,19 @@ class IRC:
 							with open('NickServ_db.csv', 'rt') as f:
 								data = f.readlines()
 							for line in data:
-								if line.__contains__(from_nick):
+								if line.split(',')[1] == from_nick:
 									print('Nick Registered')
-									nickregistered = True
+									nickregistered_ident = True
 									NickServ_db_line = line.split(',')
 									NickServ_db_passwd = NickServ_db_line[2]
 									print('saved password is ' + NickServ_db_passwd)
 									if NickServ_db_passwd == identify_passwd:
 										self._raw('PRIVMSG ' + from_nick + ' :you authenticated as ' + from_nick)
-										#self._raw('PRIVMSG #main :' + from_nick + ' authenticated as ' + from_nick)
 										self._raw('MODE #main +v ' + from_nick) #gives voice to user on channel #main
 										nickidentified = True
-									elif nickregistered == True and nickidentified == False:
+									elif nickregistered_ident == True and nickidentified == False:
 										self._raw('PRIVMSG ' + from_nick + ' :wrong password for ' + from_nick)
-							if nickregistered == False:
+							if nickregistered_ident == False:
 								self._raw('PRIVMSG ' + from_nick + ' :the nick ' + from_nick + ' is not currently registered.')
 								self._raw('PRIVMSG ' + from_nick + ' :to register, please send a register command like "/msg NickServ REGISTER ' + from_nick + 'password email@domain.tld"')
 								#dataLog.append(line)
