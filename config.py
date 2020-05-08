@@ -17,6 +17,11 @@ class ident:
 	username = 'NickServ'
 	realname = 'Nickname Service'
 
+class ident_nowplaying:
+	nickname = 'NowPlaying'
+	username = 'NowPlaying'
+	realname = 'Checks whats live, include nowplaying in your message for info'
+
 class login:
 	nickserv = None
 	operator = None
